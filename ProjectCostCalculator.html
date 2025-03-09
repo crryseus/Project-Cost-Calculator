@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Project Cost Calculator</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f4;
+            margin: 20px;
+        }
+        .container {
+            max-width: 600px;
+            margin: auto;
+            background-color: #fff;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+        }
+        h2, h3 {
+            text-align: center;
+        }
+        label {
+            display: block;
+            margin: 10px 0 5px;
+        }
+        input[type="number"] {
+            width: 100%;
+            padding: 10px;
+            margin-bottom: 10px;
+        }
+        button {
+            background-color: #007bff;
+            color: #fff;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+        button:hover {
+            background-color: #0056b3;
+        }
+        .result p {
+            margin: 5px 0;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h2>Project Cost Calculator</h2>
+        <form id="costForm">
+            <label>Number of Boards:</label>
+            <input type="number" id="numBoards" value="8">
+
+            <label>Cost per Board:</label>
+            <input type="number" id="costPerBoard" value="2500">
+
+            <label>Labor per Board:</label>
+            <input type="number" id="laborPerBoard" value="1800">
+
+            <label>Accessories (%):</label>
+            <input type="number" id="accessoriesPercent" value="20">
+
+            <label>Utility (%):</label>
+            <input type="number" id="utilityPercent" value="10">
+
+            <label>Profit (%):</label>
+            <input type="number" id="profitPercent" value="30">
+
+            <button type="button" onclick="calculateCost()">Calculate</button>
+        </form>
+
+        <h3>Project Cost Breakdown</h3>
+        <div class="result">
+            <p>Material Cost: <strong><span id="materialCost">0</span></strong></p>
+            <p>Labor Cost: <strong><span id="laborCost">0</span></strong></p>
+            <p>Accessories Cost: <strong><span id="accessoriesCost">0</span></strong></p>
+            <p>Utility Cost: <strong><span id="utilityCost">0</span></strong></p>
+            <p>Subtotal (Material + Labor + Accessories + Utility): <strong><span id="subtotalCost">0</span></strong></p>
+            <p>Profit Cost: <strong><span id="profitCost">0</span></strong></p>
+            <p><strong>Project Cost: <span id="projectCost">0</span></strong></p>
+        </div>
+    </div>
+
+    <script>
+        function calculateCost() {
+            const numBoards = parseInt(document.getElementById('numBoards').value);
+            const costPerBoard = parseFloat(document.getElementById('costPerBoard').value);
+            const laborPerBoard = parseFloat(document.getElementById('laborPerBoard').value);
+
+            const accessoriesPercent = parseFloat(document.getElementById('accessoriesPercent').value) / 100;
+            const utilityPercent = parseFloat(document.getElementById('utilityPercent').value) / 100;
+            const profitPercent = parseFloat(document.getElementById('profitPercent').value) / 100;
+
+            const materialCost = numBoards * costPerBoard;
+            const laborCost = numBoards * laborPerBoard;
+
+            const accessoriesCost = (materialCost + laborCost) * accessoriesPercent;
+            const utilityCost = (materialCost + laborCost) * utilityPercent;
+
+            const subtotalCost = materialCost + laborCost + accessoriesCost + utilityCost;
+            const profitCost = subtotalCost * profitPercent;
+
+            const projectCost = subtotalCost + profitCost;
+
+            document.getElementById('materialCost').innerText = materialCost.toFixed(2);
+            document.getElementById('laborCost').innerText = laborCost.toFixed(2);
+            document.getElementById('accessoriesCost').innerText = accessoriesCost.toFixed(2);
+            document.getElementById('utilityCost').innerText = utilityCost.toFixed(2);
+            document.getElementById('subtotalCost').innerText = subtotalCost.toFixed(2);
+            document.getElementById('profitCost').innerText = profitCost.toFixed(2);
+            document.getElementById('projectCost').innerText = projectCost.toFixed(2);
+        }
+    </script>
+</body>
+</html>
