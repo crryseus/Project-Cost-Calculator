@@ -25,7 +25,7 @@
             display: block;
             margin: 10px 0 5px;
         }
-        input[type="number"] {
+        input[type="number"], select {
             width: 100%;
             padding: 10px;
             margin-bottom: 10px;
@@ -44,6 +44,9 @@
         .result p {
             margin: 5px 0;
         }
+        .hidden {
+            display: none;
+        }
     </style>
 </head>
 <body>
@@ -58,6 +61,23 @@
 
             <label>Labor per Board:</label>
             <input type="number" id="laborPerBoard" value="1800">
+
+            <label>Finish Type:</label>
+            <select id="finishType" onchange="toggleFinishInput()">
+                <option value="">-- Select Finish Type --</option>
+                <option value="paint">Paint Finish</option>
+                <option value="laminate">Laminated</option>
+            </select>
+
+            <div id="paintCostField" class="hidden">
+                <label>Paint Cost (total):</label>
+                <input type="number" id="paintCost" value="0">
+            </div>
+
+            <div id="laminateCostField" class="hidden">
+                <label>Laminated Board Cost per Board:</label>
+                <input type="number" id="laminateCost" value="0">
+            </div>
 
             <label>Accessories (%):</label>
             <input type="number" id="accessoriesPercent" value="20">
@@ -84,14 +104,37 @@
     </div>
 
     <script>
+        function toggleFinishInput() {
+            const finishType = document.getElementById('finishType').value;
+            document.getElementById('paintCostField').classList.add('hidden');
+            document.getElementById('laminateCostField').classList.add('hidden');
+
+            if (finishType === 'paint') {
+                document.getElementById('paintCostField').classList.remove('hidden');
+            } else if (finishType === 'laminate') {
+                document.getElementById('laminateCostField').classList.remove('hidden');
+            }
+        }
+
         function calculateCost() {
             const numBoards = parseInt(document.getElementById('numBoards').value);
-            const costPerBoard = parseFloat(document.getElementById('costPerBoard').value);
+            let costPerBoard = parseFloat(document.getElementById('costPerBoard').value);
             const laborPerBoard = parseFloat(document.getElementById('laborPerBoard').value);
+            const finishType = document.getElementById('finishType').value;
 
             const accessoriesPercent = parseFloat(document.getElementById('accessoriesPercent').value) / 100;
             const utilityPercent = parseFloat(document.getElementById('utilityPercent').value) / 100;
             const profitPercent = parseFloat(document.getElementById('profitPercent').value) / 100;
+
+            let paintCost = 0;
+            let laminateExtraCost = 0;
+
+            if (finishType === 'paint') {
+                paintCost = parseFloat(document.getElementById('paintCost').value);
+            } else if (finishType === 'laminate') {
+                laminateExtraCost = parseFloat(document.getElementById('laminateCost').value);
+                costPerBoard += laminateExtraCost;
+            }
 
             const materialCost = numBoards * costPerBoard;
             const laborCost = numBoards * laborPerBoard;
@@ -99,7 +142,7 @@
             const accessoriesCost = (materialCost + laborCost) * accessoriesPercent;
             const utilityCost = (materialCost + laborCost) * utilityPercent;
 
-            const subtotalCost = materialCost + laborCost + accessoriesCost + utilityCost;
+            const subtotalCost = materialCost + laborCost + accessoriesCost + utilityCost + paintCost;
             const profitCost = subtotalCost * profitPercent;
 
             const projectCost = subtotalCost + profitCost;
